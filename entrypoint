@@ -1,0 +1,28 @@
+#!/bin/sh
+
+version_file=/etc/.image-version
+set -e
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+        set -- apache2-run "$@"
+fi
+
+echo "***************************************************************************************"
+if [ -e "${version_file}" ]; then
+    echo "Container version:  $(cat ${version_file})"
+    echo ""
+fi
+echo "Starting webserver at http://localhost:9090"
+echo ""
+echo "Note:  any warnings you see after this are safe to ignore if the URL"
+echo "works--if not, include this log when posting about errors"
+echo ""
+echo "*** Container network info ***" 
+echo "This container's internal IP:  $(hostname --ip-address)"
+if [ -e ${version_file} ]; then
+    echo "This container's internal hostname:  $(cat ${version_file} | cut -d' ' -f 1)"
+fi
+echo "***************************************************************************************"
+
+exec "$@"
