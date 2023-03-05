@@ -1,11 +1,15 @@
 #! /bin/bash
 #set -x
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 maindir=""
-container_name=webserver-example
-image_name=webserver-container
+container_name=simple-webserver
+image_name=simple-webserver
 network_name=net-cs1660
 server_port=9090
+
+version_file="${SCRIPT_DIR}/docker-support/.image-version"
 
 clean=false
 verbose=false
@@ -111,7 +115,7 @@ remove_network() {
 }
 
 start_new_container() {
-    echo "Starting webserver container, URL will be http://localhost:${server_port}"
+    echo "Starting webserver container, URL to connect from host will be http://localhost:${server_port}"
     netarg="--expose=80/tcp -p ${server_port}:80/tcp"
 
     create_network
@@ -168,8 +172,25 @@ __check_platform()
 
 }
 
+get_version_string()
+{
+    commit=""
+
+    if ! command -v git > /dev/null ; then
+	commit="NOGIT"
+    else
+	commit=$(git rev-parse --short HEAD)
+    fi
+    ts="$(date -Iseconds)"
+
+    echo "${image_name}-${commit}-${ts}"
+}
+
 build_image()
 {
+    # Add a version string so we can track the container version
+    echo "${container_name} $(get_version_string)" > "${version_file}"
+
     if test $platform = linux/arm64; then
 	exec docker build -t "$tag" -f Dockerfile.arm64 --platform linux/arm64 .
     else

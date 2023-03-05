@@ -1,4 +1,4 @@
-FROM httpd:2.4
+FROM arm64v8/httpd:2.4
 
 # Update UID/GID for web user to use (probably) same user as at build time
 RUN usermod -u 1000 www-data && \

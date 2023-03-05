@@ -1,0 +1,32 @@
+#!/bin/sh
+
+version_file=/etc/image-version
+set -e
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+        set -- apache2-run "$@"
+fi
+
+echo "*****************************************************************************************"
+if [ -e "${version_file}" ]; then
+    echo "Container version:  $(cat ${version_file})"
+    echo ""
+fi
+echo "Note:  any warnings you see after this are safe to ignore if the URL"
+echo "works--if not, include this log when posting about errors"
+echo ""
+echo "*** Container network info ***"
+echo "This container's internal IP:  $(hostname --ip-address)"
+hostname_url=""
+if [ -e ${version_file} ]; then
+    this_hostname="$(cat ${version_file} | cut -d' ' -f 1)"
+    echo "This container's internal hostname:  ${this_hostname}"
+
+    hostname_url=" or http://${this_hostname}/"
+fi
+echo ""
+echo "URL for connecting from other containers:  http://$(hostname --ip-address)/${hostname_url}"
+echo "*****************************************************************************************"
+
+exec "$@"

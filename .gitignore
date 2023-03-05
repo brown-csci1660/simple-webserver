@@ -6,5 +6,5 @@
 
 .DS_Store
 
-.image-version # Don't track changes to this file
+docker-support/.image-version
 
