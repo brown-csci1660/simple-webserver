@@ -51,7 +51,7 @@ vexec () {
     if $verbose; then
         echo "$@"
     fi
-    exec "$@"
+    "$@"
 }
 
 has_container() {
@@ -192,15 +192,15 @@ build_image()
     echo "${container_name} $(get_version_string)" > "${version_file}"
 
     if test $platform = linux/arm64; then
-	exec docker build -t "$tag" -f Dockerfile.arm64 --platform linux/arm64 .
+	docker build -t "$tag" -f Dockerfile.arm64 --platform linux/arm64 .
     else
-	exec docker build -t "$tag" -f Dockerfile --platform linux/amd64 .
+	docker build -t "$tag" -f Dockerfile --platform linux/amd64 .
     fi
 }
 
 remove_image()
 {
-    exec docker image rm "$tag"
+    docker image rm "$tag"
 }
 
 main()
