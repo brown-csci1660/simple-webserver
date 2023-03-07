@@ -5,7 +5,7 @@ RUN usermod -u 1000 www-data && \
     groupmod -g 1000 www-data
 
 # Copy in apache config
-COPY docker-support/apache2-config.conf /etc/apache2/sites-enabled/000-default.conf
+COPY docker-support/httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY docker-support/apache2-run docker-support/entrypoint /usr/local/bin/
 COPY docker-support/.image-version /etc/image-version
 
